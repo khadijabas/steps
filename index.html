@@ -1,63 +1,537 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>🎉 Steps Challenge Winners 🎉</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Morning Studio • Daily Prompts</title>
   <style>
+    :root {
+      --bg1: #0b1220;
+      --bg2: #121a2b;
+      --card: rgba(255,255,255,0.08);
+      --card2: rgba(255,255,255,0.06);
+      --stroke: rgba(255,255,255,0.14);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.70);
+      --muted2: rgba(255,255,255,0.55);
+      --shadow: 0 20px 60px rgba(0,0,0,0.45);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
     body {
-      text-align: center;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #fffaf0;
       margin: 0;
-      padding: 40px;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(122, 255, 196, 0.18), transparent 60%),
+        radial-gradient(1000px 600px at 80% 20%, rgba(125, 166, 255, 0.18), transparent 55%),
+        radial-gradient(900px 500px at 50% 95%, rgba(255, 195, 125, 0.12), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 18px 48px;
+    }
+
+    header {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .title {
+      display: grid;
+      gap: 6px;
     }
     h1 {
-      font-size: 3em;
-      color: #333;
-      animation: bounce 1.5s infinite;
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0.2px;
     }
-    p {
-      font-size: 1.2em;
-      margin-bottom: 30px;
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+      max-width: 680px;
     }
-    .winner {
-      font-size: 1.5em;
-      margin: 20px 0;
-      animation: float 3s ease-in-out infinite;
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
     }
-    .trophy {
-      font-size: 2em;
+
+    button, .chip {
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+      user-select: none;
+      font-weight: 600;
+      font-size: 13px;
     }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+
+    button:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.10);
+      border-color: rgba(255,255,255,0.22);
     }
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-8px); }
-      100% { transform: translateY(0px); }
+    button:active { transform: translateY(0); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 14px;
     }
-    .confetti {
-      font-size: 2em;
-      animation: spin 2s linear infinite;
-      display: inline-block;
+
+    @media (min-width: 840px) {
+      .grid { grid-template-columns: 1.15fr 0.85fr; }
     }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
     }
+
+    .panel .hd {
+      padding: 16px 16px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .panel .bd { padding: 16px; }
+
+    .label {
+      font-size: 12px;
+      color: var(--muted2);
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .value {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .cats {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .catbtn {
+      border-radius: 16px;
+      padding: 12px 12px;
+      display: grid;
+      gap: 3px;
+      text-align: left;
+      background: var(--card2);
+    }
+    .catbtn strong { font-size: 14px; }
+    .catbtn span { color: var(--muted); font-size: 12.5px; line-height: 1.3; }
+
+    .catbtn.active {
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.28);
+    }
+
+    .prompt-box {
+      min-height: 220px;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .prompt {
+      font-size: 22px;
+      line-height: 1.35;
+      letter-spacing: 0.2px;
+      margin: 0;
+    }
+
+    .prompt-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .primary {
+      background: rgba(122, 255, 196, 0.16);
+      border-color: rgba(122, 255, 196, 0.30);
+    }
+    .primary:hover {
+      background: rgba(122, 255, 196, 0.22);
+      border-color: rgba(122, 255, 196, 0.42);
+    }
+
+    .danger {
+      background: rgba(255, 125, 125, 0.14);
+      border-color: rgba(255, 125, 125, 0.28);
+    }
+    .danger:hover {
+      background: rgba(255, 125, 125, 0.20);
+      border-color: rgba(255, 125, 125, 0.40);
+    }
+
+    .small {
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .footer-note {
+      margin-top: 12px;
+      color: var(--muted2);
+      font-size: 12.5px;
+      line-height: 1.4;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 10px 12px;
+      border-radius: 12px;
+      color: rgba(255,255,255,0.92);
+      font-size: 13px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 150ms ease;
+      backdrop-filter: blur(10px);
+    }
+    .toast.show { opacity: 1; }
   </style>
 </head>
+
 <body>
-  <div class="confetti">🎊</div>
-  <h1>Steps Challenge Winners</h1>
-  <p>Congratulations to our top 3 runners!</p>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <h1>Morning Studio</h1>
+        <div class="subtitle">
+          Choose a category, draw one prompt, and keep it short (one sentence). Passing is always allowed.
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="btnFullscreen" class="small">Full Screen</button>
+        <button id="btnResetAll" class="small danger" title="Resets used prompts for all categories">Reset Used</button>
+      </div>
+    </header>
 
-  <div class="winner">🥇 Mohammed - 1st Place</div>
-  <div class="winner">🥈 Zainah - 2nd Place</div>
-  <div class="winner">🥉 Sondos - 3rd Place</div>
+    <div class="grid">
+      <!-- Left: Prompt -->
+      <section class="panel">
+        <div class="hd">
+          <div>
+            <div class="label">Selected Category</div>
+            <div class="value" id="selectedCatName">Thought</div>
+          </div>
+          <div class="prompt-meta">
+            <span id="remainingCount">Remaining: —</span>
+            <span>•</span>
+            <span id="usedCount">Used: —</span>
+          </div>
+        </div>
 
-  <p>🏃‍♂️💨 Keep running, stay healthy, and have fun!</p>
-  <div class="confetti">🎊</div>
+        <div class="bd">
+          <div class="prompt-box">
+            <p class="prompt" id="promptText">Click “Draw Prompt” to begin.</p>
+
+            <div class="row">
+              <button id="btnDraw" class="primary">Draw Prompt</button>
+              <button id="btnMarkUsed">Mark as Used</button>
+              <button id="btnCopy">Copy</button>
+              <button id="btnRedraw">Redraw</button>
+            </div>
+
+            <div class="footer-note">
+              Tip: Use <strong>Full Screen</strong> in the meeting room so everyone can read it.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Categories -->
+      <aside class="panel">
+        <div class="hd">
+          <div>
+            <div class="label">Categories</div>
+            <div class="value">A mature mix: thoughtful, calm, creative.</div>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="cats" id="cats"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copied</div>
+
+  <script>
+    // ---- Data (Refined, non-childish) ----
+    const CATEGORIES = [
+      {
+        id: "thought",
+        name: "Thought",
+        desc: "Perspective, values, and ideas (light but meaningful).",
+        prompts: [
+          "A belief you’ve changed your mind about.",
+          "Something you’re currently reflecting on.",
+          "A question you find yourself thinking about lately.",
+          "A habit you think is underrated.",
+          "A skill you respect in others.",
+          "A book, article, or idea that stayed with you.",
+          "Something you’re trying to be more intentional about.",
+          "A moment recently that made you pause.",
+          "A value that matters more to you now than before.",
+          "Something you’re learning to let go of."
+        ]
+      },
+      {
+        id: "awareness",
+        name: "Awareness",
+        desc: "Mood, energy, and reset — human, not too personal.",
+        prompts: [
+          "What helps you feel grounded.",
+          "A place that gives you clarity.",
+          "Something that gives you quiet energy.",
+          "One thing that improves your day more than expected.",
+          "A routine that brings balance.",
+          "Something simple you’re appreciating lately.",
+          "A boundary you’ve learned the value of.",
+          "What helps you reset mentally.",
+          "A moment of calm you remember.",
+          "Something you wish people talked about more."
+        ]
+      },
+      {
+        id: "perspective",
+        name: "Perspective",
+        desc: "Creative prompts with a professional tone.",
+        prompts: [
+          "If this week had a title, what would it be?",
+          "If today had a tone, what is it?",
+          "Describe your current mindset using a metaphor.",
+          "If your year so far were a chapter, what’s its name?",
+          "If your life had a theme right now, what is it?",
+          "A personal rule you live by.",
+          "A risk that turned out differently than expected.",
+          "Something that surprised you about yourself.",
+          "If you could give your past self one sentence, what would it be?",
+          "A quality you’re consciously developing."
+        ]
+      }
+    ];
+
+    // ---- State ----
+    const storageKey = "morningStudio_used_v1";
+    let usedMap = loadUsedMap(); // { catId: [promptIndex,...] }
+    let selectedCatId = CATEGORIES[0].id;
+    let currentPrompt = null; // {catId, index, text}
+
+    // ---- Elements ----
+    const elCats = document.getElementById("cats");
+    const elSelectedCatName = document.getElementById("selectedCatName");
+    const elPromptText = document.getElementById("promptText");
+    const elRemainingCount = document.getElementById("remainingCount");
+    const elUsedCount = document.getElementById("usedCount");
+    const toast = document.getElementById("toast");
+
+    const btnDraw = document.getElementById("btnDraw");
+    const btnRedraw = document.getElementById("btnRedraw");
+    const btnMarkUsed = document.getElementById("btnMarkUsed");
+    const btnCopy = document.getElementById("btnCopy");
+    const btnResetAll = document.getElementById("btnResetAll");
+    const btnFullscreen = document.getElementById("btnFullscreen");
+
+    // ---- Init UI ----
+    renderCategories();
+    selectCategory(selectedCatId);
+    updateCounts();
+
+    // ---- Events ----
+    btnDraw.addEventListener("click", () => drawPrompt(false));
+    btnRedraw.addEventListener("click", () => drawPrompt(true));
+    btnMarkUsed.addEventListener("click", markCurrentAsUsed);
+    btnCopy.addEventListener("click", copyPrompt);
+    btnResetAll.addEventListener("click", resetAllUsed);
+    btnFullscreen.addEventListener("click", toggleFullscreen);
+
+    // ---- Functions ----
+    function renderCategories() {
+      elCats.innerHTML = "";
+      CATEGORIES.forEach(cat => {
+        const b = document.createElement("button");
+        b.className = "catbtn";
+        b.type = "button";
+        b.dataset.cat = cat.id;
+        b.innerHTML = `<strong>${cat.name}</strong><span>${cat.desc}</span>`;
+        b.addEventListener("click", () => selectCategory(cat.id));
+        elCats.appendChild(b);
+      });
+    }
+
+    function selectCategory(catId) {
+      selectedCatId = catId;
+      const cat = CATEGORIES.find(c => c.id === catId);
+      elSelectedCatName.textContent = cat ? cat.name : "—";
+
+      [...elCats.querySelectorAll(".catbtn")].forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.cat === catId);
+      });
+
+      // Keep current prompt only if it's from same category
+      if (!currentPrompt || currentPrompt.catId !== catId) {
+        elPromptText.textContent = "Click “Draw Prompt” to begin.";
+        currentPrompt = null;
+      }
+      updateCounts();
+    }
+
+    function drawPrompt(allowRepeatIfAllUsed) {
+      const cat = CATEGORIES.find(c => c.id === selectedCatId);
+      if (!cat) return;
+
+      const used = new Set(usedMap[selectedCatId] || []);
+      const availableIdx = cat.prompts
+        .map((_, i) => i)
+        .filter(i => !used.has(i));
+
+      // If everything used
+      if (availableIdx.length === 0) {
+        if (allowRepeatIfAllUsed) {
+          const i = Math.floor(Math.random() * cat.prompts.length);
+          setCurrent(cat, i, true);
+          return;
+        }
+        elPromptText.textContent = "All prompts in this category are used. Click “Reset Used” or “Redraw”.";
+        currentPrompt = null;
+        return;
+      }
+
+      const i = availableIdx[Math.floor(Math.random() * availableIdx.length)];
+      setCurrent(cat, i, false);
+    }
+
+    function setCurrent(cat, index, isRepeat) {
+      const text = cat.prompts[index];
+      currentPrompt = { catId: cat.id, index, text };
+
+      elPromptText.textContent = text + (isRepeat ? " (repeat)" : "");
+      updateCounts();
+    }
+
+    function markCurrentAsUsed() {
+      if (!currentPrompt) {
+        showToast("Draw a prompt first");
+        return;
+      }
+      const { catId, index } = currentPrompt;
+      const arr = usedMap[catId] ? [...new Set(usedMap[catId])] : [];
+      if (!arr.includes(index)) arr.push(index);
+      usedMap[catId] = arr;
+      saveUsedMap();
+      showToast("Marked as used");
+      updateCounts();
+    }
+
+    async function copyPrompt() {
+      const text = currentPrompt ? currentPrompt.text : elPromptText.textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast("Copied");
+      } catch {
+        // Fallback
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        showToast("Copied");
+      }
+    }
+
+    function resetAllUsed() {
+      usedMap = {};
+      saveUsedMap();
+      currentPrompt = null;
+      elPromptText.textContent = "Used prompts reset. Click “Draw Prompt” to begin.";
+      updateCounts();
+      showToast("Reset complete");
+    }
+
+    function updateCounts() {
+      const cat = CATEGORIES.find(c => c.id === selectedCatId);
+      if (!cat) {
+        elRemainingCount.textContent = "Remaining: —";
+        elUsedCount.textContent = "Used: —";
+        return;
+      }
+      const used = new Set(usedMap[selectedCatId] || []);
+      const remaining = cat.prompts.length - used.size;
+      elRemainingCount.textContent = `Remaining: ${remaining}`;
+      elUsedCount.textContent = `Used: ${used.size}`;
+    }
+
+    function loadUsedMap() {
+      try {
+        const raw = localStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveUsedMap() {
+      localStorage.setItem(storageKey, JSON.stringify(usedMap));
+    }
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 1200);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen?.();
+      } else {
+        document.exitFullscreen?.();
+      }
+    }
+  </script>
 </body>
 </html>
